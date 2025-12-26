@@ -1,0 +1,7 @@
+{
+  "firebase_hosting": {
+    "deploymentHostingUrl": "https://cds-english-ace.web.app"
+  },
+  "cloud_run_deploy": {},
+  "gemini_api": {}
+}
