@@ -9,7 +9,7 @@ import {
   ReactNode,
   useCallback,
 } from 'react';
-import { isSameDay, subDays } from 'date-fns';
+import { isSameDay, subDays, startOfDay } from 'date-fns';
 
 export interface UserProgress {
   name: string;
@@ -56,27 +56,25 @@ export function UserProgressProvider({ children }: { children: ReactNode }) {
       if (savedProgressJSON) {
         currentProgress = JSON.parse(savedProgressJSON);
       } else {
-        currentProgress = defaultProgress;
+        currentProgress = { ...defaultProgress, lastLoginDate: startOfDay(new Date()).getTime() };
       }
       
       setIsNameSet(!!currentProgress.name);
 
-      const today = new Date();
-      const lastLogin = new Date(currentProgress.lastLoginDate);
+      const today = startOfDay(new Date());
+      const lastLogin = startOfDay(new Date(currentProgress.lastLoginDate));
       
       let updatedData = { ...currentProgress };
 
       if (!isSameDay(today, lastLogin)) {
-        let newStreak = currentProgress.dayStreak;
         if (isSameDay(subDays(today, 1), lastLogin)) {
           // Consecutive day
-          newStreak++;
+          updatedData.dayStreak++;
         } else {
           // Streak broken
-          newStreak = 1;
+          updatedData.dayStreak = 1;
         }
-        
-        updatedData = { ...updatedData, dayStreak: newStreak, lastLoginDate: today.getTime() };
+        updatedData.lastLoginDate = today.getTime();
       }
 
       localStorage.setItem(USER_PROGRESS_KEY, JSON.stringify(updatedData));
@@ -84,7 +82,7 @@ export function UserProgressProvider({ children }: { children: ReactNode }) {
 
     } catch (error) {
       console.error("Error fetching or creating user progress from localStorage:", error);
-      const initialProgress = {...defaultProgress, lastLoginDate: new Date().getTime()};
+      const initialProgress = {...defaultProgress, lastLoginDate: startOfDay(new Date()).getTime()};
       setProgress(initialProgress); 
       setIsNameSet(false);
       localStorage.setItem(USER_PROGRESS_KEY, JSON.stringify(initialProgress));
@@ -103,10 +101,15 @@ export function UserProgressProvider({ children }: { children: ReactNode }) {
   }
   
   const setUserName = (name: string) => {
-    if (!progress) return;
-    const newProgress = { ...progress, name: name };
-    updateProgress(newProgress);
-    setIsNameSet(true);
+    if (!progress) {
+      const newProgress = { ...defaultProgress, name: name, lastLoginDate: startOfDay(new Date()).getTime() };
+       updateProgress(newProgress);
+       setIsNameSet(true);
+    } else {
+       const newProgress = { ...progress, name: name };
+       updateProgress(newProgress);
+       setIsNameSet(true);
+    }
   }
 
   const addPoints = (points: number) => {

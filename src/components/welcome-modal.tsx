@@ -56,7 +56,7 @@ export function WelcomeModal() {
 
     if (!isNameSet) {
         return (
-            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <Dialog open={isOpen} onOpenChange={(open) => !open && name.trim() ? handleNameSubmit() : setIsOpen(open)}>
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle className="text-center text-2xl">Welcome to CDS English Ace!</DialogTitle>
@@ -93,7 +93,7 @@ export function WelcomeModal() {
                         <p className="text-md text-muted-foreground italic">&quot;{quote}&quot;</p>
                         <div className="flex items-center justify-center mt-4 gap-2 text-amber-500">
                             <Flame className="h-6 w-6"/>
-                            <span className="font-bold text-xl">{progress.dayStreak} Day Streak!</span>
+                            <span className="font-bold text-xl">{progress.dayStreak} Day Streak! Keep going!</span>
                         </div>
                     </div>
                      <Button onClick={() => setIsOpen(false)} size="lg" className="mt-6">Continue Learning</Button>
