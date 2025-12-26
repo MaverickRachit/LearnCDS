@@ -88,13 +88,17 @@ export default function ProgressPage() {
   const { items: vocabItems, loading: vocabLoading } = useSpacedRepetition('vocabulary', vocabulary);
   const { items: idiomItems, loading: idiomLoading } = useSpacedRepetition('idiom', idioms);
   const { items: oneWordItems, loading: oneWordLoading } = useSpacedRepetition('one-word', oneWordSubstitutions);
-
+  
   const loading = userProgressLoading || vocabLoading || idiomLoading || oneWordLoading;
 
   const learnedVocabulary = useMemo(() => vocabItems.filter(item => item.stage > 2), [vocabItems]);
   const learnedIdioms = useMemo(() => idiomItems.filter(item => item.stage > 2), [idiomItems]);
   const learnedOneWord = useMemo(() => oneWordItems.filter(item => item.stage > 2), [oneWordItems]);
-
+  
+  const originalVocabMap = useMemo(() => new Map(vocabulary.map(item => [item.word, item])), []);
+  const originalIdiomMap = useMemo(() => new Map(idioms.map(item => [item.idiom, item])), []);
+  const originalOneWordMap = useMemo(() => new Map(oneWordSubstitutions.map(item => [item.word, item])), []);
+  
   if (loading || !progress) {
       return (
         <div className="flex h-full w-full items-center justify-center">
@@ -136,10 +140,6 @@ export default function ProgressPage() {
       color: 'hsl(var(--chart-4))',
     },
   ];
-  
-  const originalVocabMap = useMemo(() => new Map(vocabulary.map(item => [item.word, item])), []);
-  const originalIdiomMap = useMemo(() => new Map(idioms.map(item => [item.idiom, item])), []);
-  const originalOneWordMap = useMemo(() => new Map(oneWordSubstitutions.map(item => [item.word, item])), []);
 
   return (
     <div>
