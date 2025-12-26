@@ -21,20 +21,17 @@ export function IdiomQuiz() {
 
   const quizPool = useMemo(() => {
     const queue = getReviewQueue(10);
-    // If the review queue is smaller than what's needed for a full quiz, supplement it.
-    if (queue.length < 4) {
-      const additionalItems = shuffleArray(idioms).filter(
-        i => !queue.some(qi => qi.idiom === i.idiom)
-      );
-      return [...queue, ...additionalItems.slice(0, 10 - queue.length)];
+    if (queue.length > 0) {
+        return queue;
     }
-    return queue;
+    return shuffleArray(idioms).slice(0,10);
   }, [getReviewQueue]);
 
   const getNewQuestion = useCallback(() => {
      if (quizPool.length === 0) return null;
     
     const correctIdiom = quizPool[Math.floor(Math.random() * quizPool.length)];
+    if (!correctIdiom) return null;
     
     const distractors = shuffleArray(idioms.filter(i => i.idiom !== correctIdiom.idiom))
       .slice(0, 3)
