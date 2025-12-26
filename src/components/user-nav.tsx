@@ -23,7 +23,7 @@ export const UserNav = () => {
                         src={`https://api.dicebear.com/8.x/bottts/svg?seed=${progress?.name || 'user'}`}
                         alt="User avatar"
                     />
-                    <AvatarFallback>{progress?.name?.[0].toUpperCase() || 'U'}</AvatarFallback>
+                    <AvatarFallback>{progress?.name ? progress.name[0].toUpperCase() : 'U'}</AvatarFallback>
                 </Avatar>
               </Button>
           </DropdownMenuTrigger>
